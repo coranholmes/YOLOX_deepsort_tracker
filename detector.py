@@ -26,7 +26,7 @@ class Detector():
 
 
         self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
-        self.device = torch.device('cpu')
+        # self.device = torch.device('cpu')
         self.exp = get_exp_by_name(model)
         self.test_size = self.exp.test_size  # TODO: 改成图片自适应大小
         self.model = self.exp.get_model()

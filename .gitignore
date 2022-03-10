@@ -6,6 +6,7 @@ weights
 *tar
 test.py
 data
+res
 result.json
 test2.py
 zzz.py
