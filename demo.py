@@ -46,7 +46,7 @@ def track_cap(file, dest_dir, mode):
         idx += 1
         if idx % DETECT_EVERY_N_FRAMES == 0:
             # im = imutils.resize(im, height=500)
-            image,_ = tracker.update(im)
+            image,_ = tracker.update(im, idx / DETECT_EVERY_N_FRAMES)
         
             # show the video result in real time
             # cv2.imshow('demo', image)
