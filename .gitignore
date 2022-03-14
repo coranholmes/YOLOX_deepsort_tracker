@@ -10,3 +10,5 @@ res
 result.json
 test2.py
 zzz.py
+*.json
+videos

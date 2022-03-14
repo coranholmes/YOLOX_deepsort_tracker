@@ -53,14 +53,13 @@ def vis_track(img, boxes, text_labels):
         txt_color = (255, 255, 255)
         txt_bk_color = (color_ * 255 * 0.7).astype(np.uint8).tolist()
 
-        text = str(id) + " " + text_labels[i]    
+        text = text_labels[i]    
         
         if text.endswith("!"):  # show detected vehicles
             color = (255, 255, 255)
             txt_color = (0, 0, 0)
             txt_bk_color = (255, 255, 255)
 
-        
         font = cv2.FONT_HERSHEY_SIMPLEX
         txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]
         cv2.rectangle(img, (x0, y0), (x1, y1), color, 2)  # detection box
