@@ -11,19 +11,14 @@ from YOLOX.yolox.utils import postprocess
 from utils.visualize import vis
 
 
-
 COCO_MEAN = (0.485, 0.456, 0.406)
 COCO_STD = (0.229, 0.224, 0.225)
-
-
 
 
 class Detector():
     """ 图片检测器 """
     def __init__(self, model='yolox-s', ckpt='yolox_s.pth.tar'):
         super(Detector, self).__init__()
-
-
 
         self.device = torch.device('cuda:0') if torch.cuda.is_available() else torch.device('cpu')
         # self.device = torch.device('cpu')
@@ -47,14 +42,16 @@ class Detector():
         img = img.to(self.device)
 
         with torch.no_grad():
-            outputs = self.model(img)
+            outputs = self.model(img)  # outputs.shape = torch.Size([1, 8400, 85])
+
             outputs = postprocess(
                 outputs, self.exp.num_classes, self.exp.test_conf, self.exp.nmsthre  # TODO:用户可更改
-            )[0].cpu().numpy()
-        
-        if outputs[0] is None:
+            )
+
+        if outputs[0] is None:  # deal with the situation where no object is detected
             info['boxes'], info['scores'], info['class_ids'],info['box_nums']=None,None,None,0
         else:
+            outputs = outputs[0].cpu().numpy()
             info['boxes'] = outputs[:, 0:4]/ratio
             info['scores'] = outputs[:, 4] * outputs[:, 5]
             info['class_ids'] = outputs[:, 6]
@@ -63,10 +60,6 @@ class Detector():
         if visual:
             info['visual'] = vis(info['raw_img'], info['boxes'], info['scores'], info['class_ids'], conf, COCO_CLASSES)
         return info
-
-
-
-
 
 
 if __name__=='__main__':

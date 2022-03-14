@@ -90,7 +90,7 @@ def process_video(video_path):
 
                 # write the time and location info to json file
                 json_dict = {
-                    'frame': int(ts),
+                    'frame': int(idx),
                     'id': int(id),
                     'type': cate,
                     'top': int(y1),
@@ -116,13 +116,13 @@ def process_video(video_path):
 
     file.close()
     vid.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="xd_full", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-16.mp44", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-06.mp44", help="choose a video to be processed")
     args = parser.parse_args()
 
     track_cap(args.path, args.name)

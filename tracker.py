@@ -28,20 +28,22 @@ class Tracker():
         ts:    current timestamp (s)
         """
         info = self.detector.detect(image, visual=False)
+        # print(info['class_ids'])
         outputs = []
+        scores = []
+        class_ids = []
+
         if info['box_nums']>0:
             bbox_xywh = []
-            scores = []
-            class_ids = []
             #bbox_xywh = torch.zeros((info['box_nums'], 4))
             for (x1, y1, x2, y2), class_id, score  in zip(info['boxes'],info['class_ids'],info['scores']):
                 if self.filter_class and class_names[int(class_id)] not in self.filter_class:
                     # print(class_names[int(class_id)] + "filtered!!!")
                     continue
-                # print(class_names[int(class_id)] + "preserved!!!")
                 bbox_xywh.append([int((x1+x2)/2), int((y1+y2)/2), x2-x1, y2-y1])
                 scores.append(score)
                 class_ids.append(class_id)
             bbox_xywh = torch.Tensor(bbox_xywh)
-            outputs = self.deepsort.update(bbox_xywh, scores, image)
+            if bbox_xywh.shape[0] != 0:  # deal with the situation where no objectes are detected
+                outputs = self.deepsort.update(bbox_xywh, scores, image)
         return outputs, scores, class_ids
