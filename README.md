@@ -1,4 +1,4 @@
-# YOLOX_deepsort_tracker
+# Computer-vision based Long time parked vehicle detection
 
 <div align="center">
 <p>
@@ -115,6 +115,6 @@ You can also get more information like *raw_img/boudingbox/score/class_id* from 
 ##  :rose: Run demo
 
 ```python
-python demo.py --path=test.mp4
+python demo.py
 ```
 
