@@ -14,7 +14,7 @@ class_names = COCO_CLASSES
 def track_cap(vid_path, ds_name):
     if os.path.isfile(vid_path):  # process single video
         print("Processing single video path: %s" % vid_path)
-        process_video(vid_path)
+        process_video(vid_path, True)
     else:  # process vidoes in a folder
         ds_root = os.path.join(os.getcwd(), 'videos', ds_name)
         input_dir = os.path.join(ds_root, 'input')
@@ -26,18 +26,23 @@ def track_cap(vid_path, ds_name):
             process_video(video_path)
 
 
-def process_video(video_path):
+def process_video(video_path, single=False):
     input_dir, vid_name= os.path.split(video_path)
     ds_root = os.path.abspath(os.path.join(input_dir, ".."))
     print(ds_root)
-    capture_dir, label_dir, output_dir  = make_video_subdir(ds_root)
+
+    if not single:  # process a single video
+        capture_dir, label_dir, output_dir  = make_video_subdir(ds_root)    
+        capture_output_path = os.path.join(capture_dir, vid_name[:-SUFFIX_LENGTH])  # the folder where stores the labelled key frames
+        label_output_path = os.path.join(label_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')  # the txt file where stores the labels
+        video_output_path = os.path.join(output_dir, vid_name)  # the folder where stores the labelled video
+        
+    else:  # process a folder of videos
+        capture_output_path = os.path.join(input_dir, vid_name[:-SUFFIX_LENGTH])
+        label_output_path = os.path.join(input_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')
+        video_output_path = os.path.join(input_dir, "labelled_" + vid_name)
     
-    capture_output_path = os.path.join(capture_dir, vid_name[:-SUFFIX_LENGTH])  # the folder where stores the labelled key frames
-    label_output_path = os.path.join(label_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')  # the txt file where stores the labels
-    video_output_path = os.path.join(output_dir, vid_name)  # the folder where stores the labelled video
-
     file = open(label_output_path, 'w')
-
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():
         raise IOError("Couldn't open webcam or video")
@@ -122,7 +127,7 @@ def process_video(video_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="xd_full", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-06.mp44", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="data/SussexTrafficDay1.mpg", help="choose a video to be processed")
     args = parser.parse_args()
 
     track_cap(args.path, args.name)
