@@ -29,11 +29,12 @@ def track_cap(vid_path, ds_name):
 def process_video(video_path):
     input_dir, vid_name= os.path.split(video_path)
     ds_root = os.path.abspath(os.path.join(input_dir, ".."))
+    
     print(ds_root)
-
-    capture_output_path = os.path.join(input_dir, vid_name[:-SUFFIX_LENGTH])
-    label_output_path = os.path.join(input_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')
-    video_output_path = os.path.join(input_dir, "labelled_" + vid_name)
+    capture_dir, label_dir, output_dir  = make_video_subdir(ds_root)
+    capture_output_path = os.path.join(capture_dir, vid_name[:-SUFFIX_LENGTH])
+    label_output_path = os.path.join(label_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')
+    video_output_path = os.path.join(output_dir, vid_name)
     
     file = open(label_output_path, 'w')
     vid = cv2.VideoCapture(video_path)
@@ -120,7 +121,7 @@ def process_video(video_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="xd_full", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="data/SussexTrafficDay1.mpg", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/xd_full/input/night1.mp4", help="choose a video to be processed")
     args = parser.parse_args()
 
     track_cap(args.path, args.name)
