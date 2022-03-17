@@ -46,7 +46,7 @@ def process_video(video_path):
                 int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     out = cv2.VideoWriter(video_output_path, video_FourCC, video_fps, video_size)  
 
-    tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'])
+    tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolox-s", ckpt="weights/yolox_s.pth.tar")
     idx = 0  # the idx of the frame
     image = None
     history = dict()  # the variable which stores tracking history: id -> timestamp first detected
@@ -121,7 +121,7 @@ def process_video(video_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="xd_full", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/xd_full/input/night1.mp4", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-04.mp4", help="choose a video to be processed")
     args = parser.parse_args()
 
     track_cap(args.path, args.name)
