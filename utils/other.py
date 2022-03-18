@@ -4,7 +4,7 @@ SUFFIX_LENGTH = 4  # the length of suffix (.mp4: length = 4)
 ILLEGAL_PARKED_THRESHOLD = (
     5  # if the vehicle parks more than t(s), it will be marked as illegal
 )
-EVALUATION_IOU_THRESHOLD = 0.9  # minimum iou during evaluation
+EVALUATION_IOU_THRESHOLD = 0.8  # minimum iou during evaluation
 
 
 def make_dir(path):

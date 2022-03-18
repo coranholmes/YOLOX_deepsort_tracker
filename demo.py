@@ -1,3 +1,4 @@
+from evaluator import get_iou
 from tracker import Tracker
 from detector import Detector
 import imutils, argparse, cv2
@@ -46,7 +47,7 @@ def process_video(video_path):
                 int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
     out = cv2.VideoWriter(video_output_path, video_FourCC, video_fps, video_size)  
 
-    tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolox-s", ckpt="weights/yolox_s.pth.tar")
+    tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolov3", ckpt="weights/yolox_darknet53.47.3.pth.tar")
     idx = 0  # the idx of the frame
     image = None
     history = dict()  # the variable which stores tracking history: id -> timestamp first detected
@@ -76,12 +77,18 @@ def process_video(video_path):
                 cate = class_names[int(class_id)]
                 text = str(id) + " " + cate + " " + str(round(score, 2))
 
+                parked_time = 0
                 if id not in history.keys():
-                    history[id] = ts
+                    history[id] = [ts, (x1,y1,x2,y2)]
                     text += " 0s"
-                    parked_time = 0
                 else:
-                    parked_time = int(ts - history[id])
+                    old_box = history[id][1]
+                    iou = get_iou(old_box, (x1,y1,x2,y2))
+                    if iou > 0.9:
+                        parked_time = int(ts - history[id][0])
+                    else:
+                        history[id][0] = ts
+                    history[id][1] = (x1,y1,x2,y2)
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
                         text += " Detected!"
@@ -120,8 +127,8 @@ def process_video(video_path):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
-    parser.add_argument('-n', "--name", type=str, default="xd_full", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-04.mp4", help="choose a video to be processed")
+    parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
+    parser.add_argument('-p', "--path", type=str, default="videos/others/input/rainy1.mp44", help="choose a video to be processed")
     args = parser.parse_args()
 
     track_cap(args.path, args.name)

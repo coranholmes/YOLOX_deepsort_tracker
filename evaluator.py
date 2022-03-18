@@ -11,13 +11,24 @@ def evaluate_exp(ds_name, mode):
         by_frame = False
     ds_root = os.path.join(os.getcwd(), "videos", ds_name)
     label_dir = os.path.join(ds_root, "label")
-    for label in os.listdir(label_dir):
-        label_path = os.path.join(label_dir, label)
-        gt_path = os.path.join(ds_root, "gt", label)
-        process_label(label_path, gt_path, by_frame)
+
+    tp, fp, fn = 0, 0, 0
+    for file_name in os.listdir(label_dir):
+        label_path = os.path.join(label_dir, file_name)
+        print("Evaluating on " + label_path)
+        gt_path = os.path.join(ds_root, "gt", file_name)
+        tp1, fp1, fn1 = process_label(label_path, gt_path, by_frame)
+        tp += tp1
+        fp += fp1
+        fn += fn1
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    f1 = 2 * precision * recall / (precision + recall)
+    print("tp:", tp, "fp:", fp, "fn:", fn)
+    print("precision:", precision, "recall:", recall, "f1:", f1)
 
 
-def process_label(label_path, gt_path, by_frame=True):
+def process_label(label_path, gt_path, by_frame=False):
     print("Processing label file: %s" % label_path)
     label_file = open(label_path)
     gt_file = open(gt_path)
@@ -84,22 +95,22 @@ def process_label(label_path, gt_path, by_frame=True):
                             tp += 1
                             match_cnt += 1
                             gt_ids.append(gt_id)
-                        if dec_id == 32:
-                            print(
-                                frame,
-                                dec_id,
-                                gts[frame][gt_id],
-                                positives[frame][dec_id],
-                                iou,
-                            )
+                        # if dec_id in {768, 2090, 847, 15}:
+                        #     print(
+                        #         frame,
+                        #         dec_id,
+                        #         gts[frame][gt_id],
+                        #         positives[frame][dec_id],
+                        #         iou,
+                        #     )
         fp = p2 - tp
         fn = len(gt_ids_set) - tp
 
     print("p:", p if by_frame else p2, "tp:", tp, "fp:", fp, "fn:", fn)
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-    f1 = 2 * precision * recall / (precision + recall)
-    print("f1:", f1)
+    # precision = tp / (tp + fp)
+    # recall = tp / (tp + fn)
+    # f1 = 2 * precision * recall / (precision + recall)
+    # print("f1:", f1)
     return tp, fp, fn
 
 
@@ -128,37 +139,21 @@ def get_iou(gt, dec):
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser("Evaluate results!")
-    # parser.add_argument(
-    #     "-n",
-    #     "--name",
-    #     type=str,
-    #     default="xd_full",
-    #     help="ISLab|xd_full, choose the dataset to evaluate the experiment",
-    # )
-    # parser.add_argument(
-    #     "-m",
-    #     "--mode",
-    #     type=str,
-    #     default="frame",
-    #     help="frame|event, choose the evaluation mode",
-    # )
-    # # parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-04.mp4", help="choose a video to be processed")
-    # args = parser.parse_args()
-
-    # evaluate_exp(args.name, args.mode)
-    ds_root = "videos/ISLab/"
-    file_path = "ISLab-16.txt"
-    print("Evaluating on " + file_path)
-    process_label(
-        os.path.join(ds_root, "label", file_path),
-        os.path.join(ds_root, "gt", file_path),
-        False,
+    parser = argparse.ArgumentParser("Evaluate results!")
+    parser.add_argument(
+        "-n",
+        "--name",
+        type=str,
+        default="xd_full",
+        help="ISLab|xd_full, choose the dataset to evaluate the experiment",
     )
-
-    # label_dir = os.path.join("videos", "ISLab", "label")
-    # for file_name in os.listdir(label_dir):
-    #     label_path = os.path.join(label_dir, file_name)
-    #     print("Evaluating on " + label_path)
-    #     gt_path = os.path.join("videos", "ISLab", "gt")
-    #     process_label(label_path, gt_path)
+    parser.add_argument(
+        "-m",
+        "--mode",
+        type=str,
+        default="frame",
+        help="frame|event, choose the evaluation mode",
+    )
+    # parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-04.mp4", help="choose a video to be processed")
+    args = parser.parse_args()
+    evaluate_exp(args.name, args.mode)
