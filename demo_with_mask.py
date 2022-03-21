@@ -3,6 +3,7 @@ from tracker import Tracker
 from detector import Detector
 import imutils, argparse, cv2
 import os, json
+import numpy as np
 from multiprocessing import Process  # TODO add multiprocessing support
 from utils.other import *
 from glob import glob
@@ -13,10 +14,11 @@ from shapely.geometry import Polygon
 
 class_names = COCO_CLASSES
 
-def track_cap(vid_path, ds_name):
+def track_cap(args):
+    vid_path, ds_name, show_masked = args.path, args.name, args.mask
     if os.path.isfile(vid_path):  # process single video
         print("Processing single video path: %s" % vid_path)
-        process_video(vid_path)
+        process_video(vid_path, show_masked)
     else:  # process vidoes in a folder
         ds_root = os.path.join(os.getcwd(), 'videos', ds_name)
         input_dir = os.path.join(ds_root, 'input')
@@ -25,10 +27,11 @@ def track_cap(vid_path, ds_name):
         for vid_name in os.listdir(input_dir):
             video_path = os.path.join(input_dir, vid_name)
             print("Processing video path: %s" % video_path)
-            process_video(video_path)
+            process_video(video_path, show_masked)
 
 
-def process_video(video_path):
+def process_video(video_path, show_masked):
+    print("show_masked:", show_masked)
     input_dir, vid_name= os.path.split(video_path)
     ds_root = os.path.abspath(os.path.join(input_dir, ".."))
     
@@ -37,20 +40,10 @@ def process_video(video_path):
     capture_output_path = os.path.join(capture_dir, vid_name[:-SUFFIX_LENGTH])
     label_output_path = os.path.join(label_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')
     video_output_path = os.path.join(output_dir, vid_name)
-    mask_path = os.path.join(ds_root, 'mask', vid_name[:-SUFFIX_LENGTH] + '.json')
+    mask_path = os.path.join(ds_root, 'mask', 'ISLab.json')  # TODO change the json name
     
     file = open(label_output_path, 'w')
-    mask_file = open(mask_path)
-    mask_dict = json.load(open("videos/ISLab/mask/ISLab-01.json"))
-    masks = mask_dict[0]["Data"]["svgArr"]
-
-    mask_regions = []
-    for poly in masks:
-        poly = poly["data"]
-        points = []
-        for p in poly:
-            points.append((p["x"], p["y"]))
-        mask_regions.append(points)
+    mask_regions = get_mask_regions(mask_path, vid_name[:-SUFFIX_LENGTH] + ".jpg")
 
     vid = cv2.VideoCapture(video_path)
     if not vid.isOpened():
@@ -77,6 +70,7 @@ def process_video(video_path):
             ts = idx / DETECT_EVERY_N_FRAMES
             outputs, scores, class_ids = tracker.update(im)
             text_labels = []
+            poly2 = None
             # Update parked time for each detected box
             for i in range(len(outputs)):
                 box = outputs[i]
@@ -100,20 +94,24 @@ def process_video(video_path):
                     old_box = history[id][1]
                     iou = get_iou(old_box, (x1,y1,x2,y2))
                     if iou > 0.9:
-                        # TODO filter those in masks
-                        poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  # TODO check
-                        for poly2 in mask_regions:
-                            poly2 = Polygon(poly2)
-                            intersection_area = poly1.intersection(poly2).area
-                            a = poly1.area
-                            if intersection_area <= 0 or intersection_area / a < 0.1:
-                                parked_time = int(ts - history[id][0])
-                                print(idx, id, a,intersection_area / a, parked_time)
-                            else:
-                                parked_time = 0
-                                history[id][0] = ts
-                                print(idx, id, a,intersection_area / a, parked_time, "restart counting")
+                        # filter those in masks
+                        if len(mask_regions) > 0:
+                            poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  # TODO check
+                            for poly2 in mask_regions:
+                                poly2 = Polygon(poly2)
+                                intersection_area = poly1.intersection(poly2).area
+                                a = poly1.area
+                                if intersection_area <= 0 or intersection_area / a < 0.1:
+                                    parked_time = int(ts - history[id][0])
+                                    # print(idx, id, a,intersection_area / a, parked_time)
+                                else:
+                                    parked_time = 0
+                                    history[id][0] = ts
+                                    # print(idx, id, a,intersection_area / a, parked_time, "restart counting")
+                        else:
+                            parked_time = int(ts - history[id][0])
                     else:
+                        parked_time = 0
                         history[id][0] = ts
                     history[id][1] = (x1,y1,x2,y2)
                     text = text + " " + str(parked_time) + "s"
@@ -135,7 +133,18 @@ def process_video(video_path):
                 }
                 file.write(json.dumps(json_dict) + "\n")
 
+            if show_masked:  # if True, draw the masked area
+                alpha = 0.3
+                int_coords = lambda x: np.array(x).round().astype(np.int32)
+                overlay = im.copy()
+                for poly2 in mask_regions:
+                    poly2 = Polygon(poly2)
+                    exterior = [int_coords(poly2.exterior.coords)]
+                    cv2.fillPoly(overlay, exterior, color=(0, 255, 255))
+                cv2.addWeighted(overlay, alpha, im, 1 - alpha, 0, im)
+            
             image = vis_track(im, outputs, text_labels)
+
             # save results to screen shots
             make_dir(capture_output_path)
             cv2.imwrite(os.path.join(capture_output_path, str(idx) + '.jpg'), image)
@@ -155,9 +164,10 @@ def process_video(video_path):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-01.mp4", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-16.mp44", help="choose a video to be processed")
+    parser.add_argument('-m', '--mask', action="store_true", help="show masked area or not")   # default False， --mask changes the parameter to True
     args = parser.parse_args()
 
-    track_cap(args.path, args.name)
+    track_cap(args)
 
         

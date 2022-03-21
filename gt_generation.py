@@ -46,7 +46,7 @@ def generate_labels(label_path, step, events):
 
 if __name__ == "__main__":
     label_info = [
-        [(1, 0, 6240), (28, 180, 2020), (614, 4200, 6060)],
+        [(1, 0, 6240), (28, 180, 2020), (614, 4200, 6060), (351, 2260, 3740)],
         [(39, 520, 2000), (204, 2280, 3600), (349, 4160, 5600)],
         [(1, 0, 5400), (2, 0, 5400)],
         [(9, 2130, 4800)],
@@ -72,7 +72,11 @@ if __name__ == "__main__":
         generate_labels(label_path, 30, label_info[id - 1])
 
     # ISLab
-    # generate_labels(label_path, 30, [(1, 60, 6240), (28, 180, 2020), (614, 4200, 6060)])  # 1
+    # generate_labels(
+    #     os.path.join(label_dir, "ISLab-01.txt"),
+    #     30,
+    #     [(1, 0, 6240), (28, 180, 2020), (614, 4200, 6060), (351, 2260, 3740)],
+    # )  # 1
     # generate_labels(label_path, 30, [(39, 520, 2000), (204, 2280, 3600), (349, 4160, 5600)])  # 2
     # generate_labels(label_path, 30, [(1, 60, 5400), (2, 60, 5400)])  # 3
     # generate_labels(label_path, 30, [(9, 2130, 4800)])  # 4
