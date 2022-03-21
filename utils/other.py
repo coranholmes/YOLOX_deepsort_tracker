@@ -4,7 +4,11 @@ SUFFIX_LENGTH = 4  # the length of suffix (.mp4: length = 4)
 ILLEGAL_PARKED_THRESHOLD = (
     5  # if the vehicle parks more than t(s), it will be marked as illegal
 )
-EVALUATION_IOU_THRESHOLD = 0.8  # minimum iou during evaluation
+EVALUATION_IOU_THRESHOLD = (
+    0.8  # minimum iou between detected vehicle and gt during evaluation
+)
+ILLEGAL_PARKING_MAX_RATIO = 0.28  # if the area of the vehicle / intersecion of vehicle and no-parking area > treshold, it is regarded as illegal parking behavior
+MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle
 
 
 def make_dir(path):
