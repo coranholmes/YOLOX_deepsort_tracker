@@ -14,20 +14,31 @@ from shapely.geometry import Polygon
 
 class_names = COCO_CLASSES
 
-def track_cap(args):
+def multi_worker(args):
     vid_path, ds_name, show_masked = args.path, args.name, args.mask
     if os.path.isfile(vid_path):  # process single video
         print("Processing single video path: %s" % vid_path)
         process_video(vid_path, show_masked)
-    else:  # process vidoes in a folder
+    else:
+        n_proc = 6
         ds_root = os.path.join(os.getcwd(), 'videos', ds_name)
         input_dir = os.path.join(ds_root, 'input')
-        
-        # Iterate over videos in the dataset folder 
-        for vid_name in os.listdir(input_dir):
-            video_path = os.path.join(input_dir, vid_name)
-            print("Processing video path: %s" % video_path)
-            process_video(video_path, show_masked)
+        video_list = [os.path.join(input_dir, vid_name) for vid_name in os.listdir(input_dir)]
+
+        chunks = [video_list[i::n_proc] for i in range(n_proc)]
+        procs = []
+        for chunk in chunks:
+            if len(chunk) > 0:
+                proc = Process(target=multi_process_video, args=(chunk, ), kwargs={"show_masked": show_masked})
+                procs.append(proc)
+                proc.start()
+
+        for proc in procs:
+            proc.join()
+
+def multi_process_video(chunk, show_masked):
+    for vid_path in chunk:
+        process_video(vid_path, show_masked)
 
 
 def process_video(video_path, show_masked):
@@ -158,18 +169,17 @@ def process_video(video_path, show_masked):
 
     file.close()
     vid.release()
-    # cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     start = time.time()
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp44", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp4", help="choose a video to be processed")
     parser.add_argument('-m', '--mask', action="store_true", help="show masked area or not")   # default False， --mask changes the parameter to True
     args = parser.parse_args()
 
-    track_cap(args)
+    multi_worker(args)
     end = time.time()
     print("Processing time: ", end - start)
 
