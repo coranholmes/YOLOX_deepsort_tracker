@@ -8,6 +8,8 @@ EVALUATION_IOU_THRESHOLD = (
     0.8  # minimum iou between detected vehicle and gt during evaluation
 )
 ILLEGAL_PARKING_MAX_RATIO = 0.28  # if the area of the vehicle / intersecion of vehicle and no-parking area > treshold, it is regarded as illegal parking behavior
+
+MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
 MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle
 
 

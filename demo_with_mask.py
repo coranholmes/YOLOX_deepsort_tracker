@@ -2,7 +2,7 @@ from evaluator import get_iou
 from tracker import Tracker
 from detector import Detector
 import imutils, argparse, cv2
-import os, json
+import os, json, time
 import numpy as np
 from multiprocessing import Process  # TODO add multiprocessing support
 from utils.other import *
@@ -52,7 +52,7 @@ def process_video(video_path, show_masked):
     video_fps = vid.get(cv2.CAP_PROP_FPS)
     video_size = (int(vid.get(cv2.CAP_PROP_FRAME_WIDTH)),
                 int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT)))
-    out = cv2.VideoWriter(video_output_path, video_FourCC, video_fps, video_size)  
+    # out = cv2.VideoWriter(video_output_path, video_FourCC, video_fps, video_size)  
 
     tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolov3", ckpt="weights/yolox_darknet53.47.3.pth.tar")
     idx = 0  # the idx of the frame
@@ -101,7 +101,7 @@ def process_video(video_path, show_masked):
                                 poly2 = Polygon(poly2)
                                 intersection_area = poly1.intersection(poly2).area
                                 a = poly1.area
-                                if intersection_area <= 0 or intersection_area / a < 0.1:
+                                if intersection_area / a > ILLEGAL_PARKING_MAX_RATIO:
                                     parked_time = int(ts - history[id][0])
                                     # print(idx, id, a,intersection_area / a, parked_time)
                                 else:
@@ -149,10 +149,10 @@ def process_video(video_path, show_masked):
             make_dir(capture_output_path)
             cv2.imwrite(os.path.join(capture_output_path, str(idx) + '.jpg'), image)
 
-        if image is not None:
-            out.write(image)
-        else:
-            out.write(im)
+        # if image is not None:
+        #     out.write(image)
+        # else:
+        #     out.write(im)
         
         idx += 1
 
@@ -162,12 +162,15 @@ def process_video(video_path, show_masked):
 
 
 if __name__ == '__main__':
+    start = time.time()
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-16.mp44", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp44", help="choose a video to be processed")
     parser.add_argument('-m', '--mask', action="store_true", help="show masked area or not")   # default False， --mask changes the parameter to True
     args = parser.parse_args()
 
     track_cap(args)
+    end = time.time()
+    print("Processing time: ", end - start)
 
         
