@@ -4,7 +4,7 @@ from detector import Detector
 import imutils, argparse, cv2
 import os, json, time
 import numpy as np
-from multiprocessing import Process  # TODO add multiprocessing support
+from multiprocessing import Process
 from utils.other import *
 from glob import glob
 from utils.visualize import vis_track
@@ -42,7 +42,7 @@ def multi_process_video(chunk, show_masked):
 
 
 def process_video(video_path, show_masked):
-    print("show_masked:", show_masked)
+
     input_dir, vid_name= os.path.split(video_path)
     ds_root = os.path.abspath(os.path.join(input_dir, ".."))
     
@@ -51,7 +51,7 @@ def process_video(video_path, show_masked):
     capture_output_path = os.path.join(capture_dir, vid_name[:-SUFFIX_LENGTH])
     label_output_path = os.path.join(label_dir, vid_name[:-SUFFIX_LENGTH] + '.txt')
     video_output_path = os.path.join(output_dir, vid_name)
-    mask_path = os.path.join(ds_root, 'mask', 'ISLab.json')  # TODO change the json name
+    mask_path = os.path.join(ds_root, 'mask', 'mask.json')
     
     file = open(label_output_path, 'w')
     mask_regions = get_mask_regions(mask_path, vid_name[:-SUFFIX_LENGTH] + ".jpg")
@@ -92,7 +92,6 @@ def process_video(video_path, show_masked):
                 id = box[4]  # identifier of the detected object
                 score = scores[i]
                 class_id = class_ids[i]
-                clock = True
 
                 cate = class_names[int(class_id)]
                 text = str(id) + " " + cate + " " + str(round(score, 2))
@@ -101,23 +100,25 @@ def process_video(video_path, show_masked):
                 if id not in history.keys():
                     history[id] = [ts, (x1,y1,x2,y2)]
                     text += " 0s"
+
                 else:
+                    clock = True
+
+                    # filter those in masks
+                    poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  
+                    for poly2 in mask_regions:
+                        poly2 = Polygon(poly2)
+                        intersection_area = poly1.intersection(poly2).area
+                        a = poly1.area
+                        if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO:
+                            clock = False
+                    
                     # add movement restriction
-                    old_box = history[id][1]
-                    iou = get_iou(old_box, (x1,y1,x2,y2))
-                    if iou > MOVEMENT_MAX_IOU:
-                        # filter those in masks
-                        if len(mask_regions) > 0:
-                            poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  # TODO check
-                            for poly2 in mask_regions:
-                                poly2 = Polygon(poly2)
-                                intersection_area = poly1.intersection(poly2).area
-                                a = poly1.area
-                                if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO:
-                                    clock = False
-                                    # print(idx, id, a,intersection_area / a, parked_time, "restart counting")
-                    else:
-                        clock = False
+                    if MOVEMENT_RESTRICTION:
+                        old_box = history[id][1]
+                        iou = get_iou(old_box, (x1,y1,x2,y2))
+                        if iou <= MOVEMENT_MAX_IOU: 
+                            clock = False
                     
                     # clock the parking time
                     if clock:
