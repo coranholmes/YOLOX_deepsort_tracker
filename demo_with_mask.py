@@ -92,6 +92,7 @@ def process_video(video_path, show_masked):
                 id = box[4]  # identifier of the detected object
                 score = scores[i]
                 class_id = class_ids[i]
+                clock = True
 
                 cate = class_names[int(class_id)]
                 text = str(id) + " " + cate + " " + str(round(score, 2))
@@ -104,7 +105,7 @@ def process_video(video_path, show_masked):
                     # add movement restriction
                     old_box = history[id][1]
                     iou = get_iou(old_box, (x1,y1,x2,y2))
-                    if iou > 0.9:
+                    if iou > MOVEMENT_MAX_IOU:
                         # filter those in masks
                         if len(mask_regions) > 0:
                             poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  # TODO check
@@ -112,18 +113,19 @@ def process_video(video_path, show_masked):
                                 poly2 = Polygon(poly2)
                                 intersection_area = poly1.intersection(poly2).area
                                 a = poly1.area
-                                if intersection_area / a > ILLEGAL_PARKING_MAX_RATIO:
-                                    parked_time = int(ts - history[id][0])
-                                    # print(idx, id, a,intersection_area / a, parked_time)
-                                else:
-                                    parked_time = 0
-                                    history[id][0] = ts
+                                if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO:
+                                    clock = False
                                     # print(idx, id, a,intersection_area / a, parked_time, "restart counting")
-                        else:
-                            parked_time = int(ts - history[id][0])
+                    else:
+                        clock = False
+                    
+                    # clock the parking time
+                    if clock:
+                        parked_time = int(ts - history[id][0])
                     else:
                         parked_time = 0
-                        history[id][0] = ts
+                        history[id][0] = ts                      
+                    
                     history[id][1] = (x1,y1,x2,y2)
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
@@ -175,7 +177,7 @@ if __name__ == '__main__':
     start = time.time()
     parser = argparse.ArgumentParser("YOLOX-Tracker Demo!")
     parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
-    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp4", help="choose a video to be processed")
+    parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp44", help="choose a video to be processed")
     parser.add_argument('-m', '--mask', action="store_true", help="show masked area or not")   # default False， --mask changes the parameter to True
     args = parser.parse_args()
 
