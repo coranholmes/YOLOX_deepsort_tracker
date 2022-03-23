@@ -100,7 +100,6 @@ def process_video(video_path, show_masked):
                 if id not in history.keys():
                     history[id] = [ts, (x1,y1,x2,y2)]
                     text = text + " " + str(N_INIT - 1) + "s"  # 第一次出现已经过去
-
                 else:
                     clock = True
 
@@ -125,14 +124,13 @@ def process_video(video_path, show_masked):
                         parked_time = int(ts - history[id][0])
                     else:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
-                        history[id][0] = ts - 0                   
+                        history[id][0] = ts                  
                     
                     history[id][1] = (x1,y1,x2,y2)
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
                         text += " Detected!"
                 text_labels.append(text)
-
                 # write the time and location info to json file
                 json_dict = {
                     'frame': int(idx),

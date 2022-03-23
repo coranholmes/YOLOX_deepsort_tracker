@@ -11,7 +11,7 @@ ILLEGAL_PARKING_MAX_RATIO = 0.28  # if the area of the vehicle / intersecion of 
 
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
 MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle
-N_INIT = 0  # deepsort parameter, tracker confirmed after N_INIT times
+N_INIT = 3  # deepsort parameter, tracker confirmed after N_INIT times
 
 ISLab_frame = [20, 20, 20, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
 ISLab_label = [

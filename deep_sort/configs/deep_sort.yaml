@@ -2,7 +2,7 @@ DEEPSORT:
   REID_CKPT: "deep_sort/deep_sort/deep/checkpoint/ckpt.t7"
   MAX_DIST: 0.2
   MIN_CONFIDENCE: 0.3
-  NMS_MAX_OVERLAP: 0.8  # default 0.9
+  NMS_MAX_OVERLAP: 0.8  # default 0.9，数值越大意味着重合度很大才会被过滤掉
   MAX_IOU_DISTANCE: 0.5  # default 0.7
   MAX_AGE: 5  # default 70
   N_INIT: 3
