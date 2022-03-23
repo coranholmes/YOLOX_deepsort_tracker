@@ -12,6 +12,47 @@ ILLEGAL_PARKING_MAX_RATIO = 0.28  # if the area of the vehicle / intersecion of 
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
 MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle
 
+ISLab_label = [
+    [(1, 0, 6240), (28, 180, 2020), (614, 4200, 6060), (351, 2260, 3740)],
+    [(39, 520, 2000), (204, 2280, 3600), (349, 4160, 5600)],
+    [(1, 0, 5400), (2, 0, 5400)],
+    [(9, 2130, 4800)],
+    [(6, 960, 4680)],
+    [(23, 2370, 4650)],
+    [(32, 1110, 3870)],
+    [(72, 1080, 3120)],
+    [(57, 1500, 3510)],
+    [(71, 2130, 3570), (71, 3900, 4470)],
+    [(69, 1530, 4110)],
+    [(95, 1920, 3990)],
+    [(15, 450, 2490)],
+    [(1, 0, 8820), (157, 3660, 5250), (205, 5700, 8100)],
+    [(6, 360, 3720)],
+    [(8, 840, 2910)],
+]
+
+xd_full_lst = [
+    "cloudy.txt",
+    "night1.txt",
+    "night2.txt",
+    "rainy1.txt",
+    "rainy2.txt",
+    "sunny_shadow1.txt",
+    "sunny_shadow2.txt",
+    "sunny1.txt",
+    "sunny2.txt",
+]
+xd_full_label = {
+    "cloudy": [(1, 125, 650), (19, 0, 1125), (8, 0, 3075), (327, 2075, 2575)],
+    "night1": [],
+    "night2": [],
+    "rainy1": [(17, 0, 3210), (1818, 3540, 3660), (1852, 3570, 3720)],
+    "rainy2": [],
+    "sunny_shadow1": [],
+    "sunny_shadow2": [(6, 0, 4110), (16, 0, 4110)],
+    "sunny1": [(242, 360, 750)],
+    "sunny2": [(762, 1980, 2160), (3, 0, 3990)],
+}
 
 def make_dir(path):
     if not os.path.exists(path):
