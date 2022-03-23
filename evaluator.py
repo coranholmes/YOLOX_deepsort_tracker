@@ -4,28 +4,41 @@ from utils.other import *
 from torch import positive
 
 
-def evaluate_exp(ds_name, mode):
+def evaluate_exp(args):
+    label_path, ds_name, mode = args.path, args.name, args.mode
     if mode == "frame":
         by_frame = True
     else:
         by_frame = False
-    ds_root = os.path.join(os.getcwd(), "videos", ds_name)
-    label_dir = os.path.join(ds_root, "label")
 
-    tp, fp, fn = 0, 0, 0
-    for file_name in os.listdir(label_dir):
-        label_path = os.path.join(label_dir, file_name)
-        print("Evaluating on " + label_path)
-        gt_path = os.path.join(ds_root, "gt", file_name)
-        tp1, fp1, fn1 = process_label(label_path, gt_path, by_frame)
-        tp += tp1
-        fp += fp1
-        fn += fn1
-    precision = tp / (tp + fp)
-    recall = tp / (tp + fn)
-    f1 = 2 * precision * recall / (precision + recall)
-    print("tp:", tp, "fp:", fp, "fn:", fn)
-    print("precision:", precision, "recall:", recall, "f1:", f1)
+    if os.path.isfile(label_path):  # process single video
+        print("Processing single label_path: %s" % label_path)
+        label_dir, label_name = os.path.split(label_path)
+        ds_root = os.path.abspath(os.path.join(label_dir, ".."))
+        gt_path = os.path.join(ds_root, "gt", label_name)
+        tp, fp, fn = process_label(label_path, gt_path, by_frame)
+    else:
+        ds_root = os.path.join(os.getcwd(), "videos", ds_name)
+        label_dir = os.path.join(ds_root, "label")
+
+        tp, fp, fn = 0, 0, 0
+        for file_name in os.listdir(label_dir):
+            label_path = os.path.join(label_dir, file_name)
+            print("Evaluating on " + label_path)
+            gt_path = os.path.join(ds_root, "gt", file_name)
+            tp1, fp1, fn1 = process_label(label_path, gt_path, by_frame)
+            tp += tp1
+            fp += fp1
+            fn += fn1
+    if tp + fp != 0 and tp + fn != 0:
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        f1 = 2 * precision * recall / (precision + recall)
+        print("tp:", tp, "fp:", fp, "fn:", fn)
+        print("precision:", precision, "recall:", recall, "f1:", f1)
+    else:
+        print("tp:", tp, "fp:", fp, "fn:", fn)
+        print("No precision, recall, f1 calculated!")
 
 
 def process_label(label_path, gt_path, by_frame=False):
@@ -95,22 +108,11 @@ def process_label(label_path, gt_path, by_frame=False):
                             tp += 1
                             match_cnt += 1
                             gt_ids.append(gt_id)
-                        # if dec_id in {768, 2090, 847, 15}:
-                        #     print(
-                        #         frame,
-                        #         dec_id,
-                        #         gts[frame][gt_id],
-                        #         positives[frame][dec_id],
-                        #         iou,
-                        #     )
+                            print(dec_id, "matches", gt_id)
         fp = p2 - tp
         fn = len(gt_ids_set) - tp
 
     print("p:", p if by_frame else p2, "tp:", tp, "fp:", fp, "fn:", fn)
-    # precision = tp / (tp + fp)
-    # recall = tp / (tp + fn)
-    # f1 = 2 * precision * recall / (precision + recall)
-    # print("f1:", f1)
     return tp, fp, fn
 
 
@@ -148,6 +150,13 @@ if __name__ == "__main__":
         help="ISLab|xd_full, choose the dataset to evaluate the experiment",
     )
     parser.add_argument(
+        "-p",
+        "--path",
+        type=str,
+        default="videos/xd_full/label/sunny2.txtt",
+        help="choose a label to process.",
+    )
+    parser.add_argument(
         "-m",
         "--mode",
         type=str,
@@ -156,4 +165,4 @@ if __name__ == "__main__":
     )
     # parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-04.mp4", help="choose a video to be processed")
     args = parser.parse_args()
-    evaluate_exp(args.name, args.mode)
+    evaluate_exp(args)
