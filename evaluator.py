@@ -76,26 +76,35 @@ def process_label(label_path, gt_path, by_frame=False):
     p2 = len(
         dec_ids_set
     )  # p is the number of detected bounding boxes, p2 is the number of detected ids
+    print("detected ids:", dec_ids_set, "\tgt ids:", gt_ids_set)
+
     tp, fn = 0, 0
-    print(dec_ids_set, gt_ids_set)
     if (
         by_frame
     ):  # evaluate based on frames, every gt box in one frame is regarded as one positive sample
-        for frame in gts:  # 遍历gt中的每个frame
+        dec_history = {}
+        for frame in sorted(gts):  # 遍历gt中的每个frame
             cur_frame_gt_cnt = len(gts[frame])
             match_cnt = 0
             for gt_id in gts[frame]:  #  遍历gt中的每个frame中的每个box
                 if frame in positives:
-                    for dec_id in positives[frame]:  # 对于对应frame中每个detection到的box进行匹配
+                    for dec_id in positives[
+                        frame
+                    ]:  # 对于对应frame中每个detection到的box进行匹配(det 匹配 gt)
                         iou = get_iou(gts[frame][gt_id], positives[frame][dec_id])
                         if iou > EVALUATION_IOU_THRESHOLD:
                             tp += 1
                             match_cnt += 1
+                            # print(dec_id, "matches", gt_id)
+            if frame not in positives:
+                print(frame, gts[frame].keys(), [])
+            elif cur_frame_gt_cnt != len(positives[frame]):
+                print(frame, gts[frame].keys(), positives[frame].keys())
             fn = fn + (cur_frame_gt_cnt - match_cnt)  # fn就是没匹配到的
         fp = p - tp
     else:  # evaluate based on events
         gt_ids = []
-        for frame in gts:  # 遍历gt中的每个frame
+        for frame in sorted(gts):  # 遍历gt中的每个frame
             cur_frame_gt_cnt = len(gts[frame])
             match_cnt = 0
             for gt_id in gts[frame]:  #  遍历gt中的每个frame中的每个box

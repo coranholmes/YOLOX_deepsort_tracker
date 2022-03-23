@@ -7,8 +7,17 @@ def generate_labels(label_path, step, events):
     ds_root = os.path.abspath(os.path.join(label_dir, ".."))
     gt_path = os.path.join("videos", ds_root, "gt", label_name)
     gt_file = open(gt_path, "w")
+    if "ISLab" in label_path:
+        id = int(label_path[-6:-4])
+        frame_rate = ISLab_frame[id - 1]
+    else:
+        _, file_name = os.path.split(label_path)
+        id = file_name[:-4]
+        frame_rate = xd_full_frame[id]
+
     for id, event_start, event_end in events:
         matched = False
+        event_start = event_start + (ILLEGAL_PARKED_THRESHOLD + N_INIT - 1) * frame_rate
         label_file = open(label_path)
         for line in label_file:
             json_dict = json.loads(line)
@@ -52,14 +61,14 @@ if __name__ == "__main__":
         label_path = os.path.join(label_dir, file_name)
         id = int(label_path[-6:-4])
         print("processing " + label_path)
-        generate_labels(label_path, 30, ISLab_label[id - 1])
+        generate_labels(label_path, ISLab_frame[id - 1], ISLab_label[id - 1])
 
     # Label xd_full dataset
     label_dir = os.path.join("videos", "xd_full", "label")
     for file_name in xd_full_lst:
         label_path = os.path.join(label_dir, file_name)
         id = file_name[:-4]
-        generate_labels(label_path, 30, xd_full_label[id])
+        generate_labels(label_path, xd_full_frame[id], xd_full_label[id])
 
     # Label single video example
     # generate_labels(
