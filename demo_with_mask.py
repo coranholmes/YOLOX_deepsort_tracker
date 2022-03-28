@@ -69,7 +69,7 @@ def process_video(video_path, show_masked):
     tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolov3", ckpt="weights/yolox_darknet53.47.3.pth.tar")
     idx = 0  # the idx of the frame
     image = None
-    history = dict()  # the variable which stores tracking history: id -> timestamp first detected
+    history = dict()  # the variable which stores tracking history: id -> [timestamp first detected, (x1,y1,x2,y2) 最新位置, crop of the vehicle]
     DETECT_EVERY_N_FRAMES = round(video_fps)  # detect every second
 
     while True:
@@ -99,7 +99,8 @@ def process_video(video_path, show_masked):
 
                 parked_time = 0
                 if id not in history.keys():
-                    history[id] = [ts, (x1,y1,x2,y2)]
+                    crop = im[y1:y2, x1:x2]
+                    history[id] = [ts, (x1,y1,x2,y2), crop]
                     parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
                     text = text + " " + str(parked_time) + "s"  
                 else:
@@ -147,9 +148,11 @@ def process_video(video_path, show_masked):
                         parked_time = int(ts - history[id][0])
                     else:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
-                        history[id][0] = ts                 
+                        history[id][0] = ts   
+                        history[id][2] = im[y1:y2, x1:x2]  # TODO 是否需要更新？
                     
                     history[id][1] = (x1,y1,x2,y2)
+
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
                         text += " Detected!"
