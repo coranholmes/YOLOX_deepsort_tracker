@@ -4,6 +4,29 @@ from utils.other import *
 from torch import positive
 
 
+def calculate_f1(tp, fp, fn):
+    text = ""
+    if tp + fp != 0 and tp + fn != 0:
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        f1 = 2 * precision * recall / (precision + recall)
+        text = text + "tp: " + str(tp) + "\tfp: " + str(fp) + "\tfn: " + str(fn) + "\n"
+        text = (
+            text
+            + "precision: "
+            + str(precision)
+            + "\trecall: "
+            + str(recall)
+            + "\tf1: "
+            + str(f1)
+            + "\n"
+        )
+    else:
+        text = text + "tp: " + str(tp) + "\tfp: " + str(fp) + "\tfn: " + str(fn) + "\n"
+        text += "No precision, recall, f1 calculated!\n"
+    return text
+
+
 def evaluate_exp(args):
     label_path, ds_name, mode = args.path, args.name, args.mode
     if mode == "frame":
@@ -17,10 +40,12 @@ def evaluate_exp(args):
         ds_root = os.path.abspath(os.path.join(label_dir, ".."))
         gt_path = os.path.join(ds_root, "gt", label_name)
         tp, fp, fn = process_label(label_path, gt_path, by_frame)
+        calculate_f1(tp, fp, fn)
     else:
         ds_root = os.path.join(os.getcwd(), "videos", ds_name)
         label_dir = os.path.join(ds_root, "label")
-
+        exp_path = os.path.join(ds_root, "exp", "eval_res.txt")
+        exp_file = open(exp_path, "a")
         tp, fp, fn = 0, 0, 0
         for file_name in os.listdir(label_dir):
             label_path = os.path.join(label_dir, file_name)
@@ -30,15 +55,10 @@ def evaluate_exp(args):
             tp += tp1
             fp += fp1
             fn += fn1
-    if tp + fp != 0 and tp + fn != 0:
-        precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
-        f1 = 2 * precision * recall / (precision + recall)
-        print("tp:", tp, "fp:", fp, "fn:", fn)
-        print("precision:", precision, "recall:", recall, "f1:", f1)
-    else:
-        print("tp:", tp, "fp:", fp, "fn:", fn)
-        print("No precision, recall, f1 calculated!")
+        text = calculate_f1(tp, fp, fn)
+        exp_file.writelines(ds_name + "_" + mode + "_" + get_exp_paras() + "\n")
+        exp_file.writelines(text + "\n")
+        print(text)
 
 
 def process_label(label_path, gt_path, by_frame=False):
@@ -96,10 +116,21 @@ def process_label(label_path, gt_path, by_frame=False):
                             tp += 1
                             match_cnt += 1
                             # print(dec_id, "matches", gt_id)
-            if frame not in positives:
+                        else:
+                            if gt_id == dec_id:
+                                print(
+                                    frame,
+                                    gts[frame][gt_id],
+                                    positives[frame][dec_id],
+                                    iou,
+                                    "iou threshold issue",
+                                )
+            if frame not in positives:  # fn
                 print(frame, gts[frame].keys(), [])
-            elif cur_frame_gt_cnt != len(positives[frame]):
+            elif cur_frame_gt_cnt != len(positives[frame]):  # fn + 一部分fp
                 print(frame, gts[frame].keys(), positives[frame].keys())
+            # else:
+            #     print(frame, gts[frame].keys(), gts[frame].keys())
             fn = fn + (cur_frame_gt_cnt - match_cnt)  # fn就是没匹配到的
         fp = p - tp
     else:  # evaluate based on events
@@ -136,11 +167,11 @@ def get_iou(gt, dec):
     yB = min(gt[3], dec[3])
 
     # compute the area of intersection rectangle
-    interArea = max(0, xB - xA) * max(0, yB - yA)
+    interArea = max(0, xB - xA + 1) * max(0, yB - yA + 1)
 
     # compute the area of both the prediction and ground-truth
-    boxAArea = (gt[2] - gt[0]) * (gt[3] - gt[1])
-    boxBArea = (dec[2] - dec[0]) * (dec[3] - dec[1])
+    boxAArea = (gt[2] - gt[0] + 1) * (gt[3] - gt[1] + 1)
+    boxBArea = (dec[2] - dec[0] + 1) * (dec[3] - dec[1] + 1)
 
     # compute the intersection over union by taking the intersection
     # area and dividing it by the sum of prediction + ground-truth

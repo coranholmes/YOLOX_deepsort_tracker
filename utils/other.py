@@ -5,13 +5,39 @@ ILLEGAL_PARKED_THRESHOLD = (
     5  # if the vehicle parks more than t(s), it will be marked as illegal
 )
 EVALUATION_IOU_THRESHOLD = (
-    0.8  # minimum iou between detected vehicle and gt during evaluation
+    0.6  # minimum iou between detected vehicle and gt during evaluation
 )
-ILLEGAL_PARKING_MAX_RATIO = 0.28  # if the area of the vehicle / intersecion of vehicle and no-parking area > treshold, it is regarded as illegal parking behavior
+
+ILLEGAL_POCICY = "car"  # car|wheel|center
+ILLEGAL_PARKING_MAX_RATIO = 0.3  # if the area of the vehicle / intersecion of vehicle and no-parking area > treshold, it is regarded as illegal parking behavior
+ILLEGAL_PARKING_MAX_RATIO_W = 0.7  # similar to above but the RATIO is for wheel
 
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
-MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle
+MOVEMENT_MAX_IOU = 0.8  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
 N_INIT = 3  # deepsort parameter, tracker confirmed after N_INIT times
+
+
+def get_exp_paras():
+    name = ""
+    policy = ILLEGAL_POCICY
+    name = policy + "_"
+    if policy == "car":
+        name = name + str(ILLEGAL_PARKING_MAX_RATIO) + "_"
+    elif policy == "wheel":
+        name = name + str(ILLEGAL_PARKING_MAX_RATIO_W) + "_"
+    elif policy == "center":
+        name = name + "NA_"
+
+    name = (
+        name
+        + str(MOVEMENT_RESTRICTION)
+        + "_"
+        + str(MOVEMENT_MAX_IOU)
+        + "_"
+        + str(EVALUATION_IOU_THRESHOLD)
+    )
+    return name
+
 
 ISLab_frame = [20, 20, 20, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
 ISLab_label = [
@@ -20,15 +46,15 @@ ISLab_label = [
     [(1, 0, 5400), (2, 0, 5400)],
     [(9, 2130, 4800)],
     [(6, 960, 4680)],
-    [(23, 2370, 4650)],
+    [(23, 2370, 4650)],  # ISLab_06
     [(24, 1110, 3870)],
     [(60, 1080, 3120)],
     [(49, 1500, 3510)],
     [(67, 2130, 3570), (67, 3900, 4470)],
-    [(64, 1530, 4110)],
+    [(64, 1530, 4110)],  # ISLab_11
     [(86, 1920, 3990)],
     [(15, 450, 2490)],
-    [(1, 0, 8820), (134, 3660, 5250), (176, 5700, 8100)],
+    [(1, 0, 8820), (134, 3660, 5250), (176, 5700, 8100)],  # ISLab_14
     [(6, 360, 3720)],
     [(8, 840, 2910)],
 ]

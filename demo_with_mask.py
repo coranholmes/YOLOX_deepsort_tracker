@@ -8,8 +8,9 @@ from multiprocessing import Process
 from utils.other import *
 from glob import glob
 from utils.visualize import vis_track
+from utils.other import *
 from YOLOX.yolox.data.datasets.coco_classes import COCO_CLASSES
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, Point
 
 
 class_names = COCO_CLASSES
@@ -99,18 +100,40 @@ def process_video(video_path, show_masked):
                 parked_time = 0
                 if id not in history.keys():
                     history[id] = [ts, (x1,y1,x2,y2)]
-                    text = text + " " + str(N_INIT - 1) + "s"  # 第一次出现已经过去
+                    parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
+                    text = text + " " + str(parked_time) + "s"  
                 else:
                     clock = True
 
                     # filter those in masks
-                    poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  
-                    for poly2 in mask_regions:
-                        poly2 = Polygon(poly2)
-                        intersection_area = poly1.intersection(poly2).area
-                        a = poly1.area
-                        if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO:
-                            clock = False
+                    if ILLEGAL_POCICY == "car":
+                        ## vanilla iou
+                        poly1 = Polygon([(x1,y1),(x1,y2),(x2,y2),(x2,y1)])  # dtected bbox
+                        for poly2 in mask_regions:
+                            poly2 = Polygon(poly2)
+                            intersection_area = poly1.intersection(poly2).area
+                            a = poly1.area
+                            if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO:
+                                clock = False
+                                break
+                    elif ILLEGAL_POCICY == "wheel":
+                        ## wheel iou
+                        y1_prime = y1 + 2/3*(y2-y1)
+                        poly1 = Polygon([(x1,y1_prime),(x1,y2),(x2,y2),(x2,y1_prime)])  # dtected bbox
+                        for poly2 in mask_regions:
+                            poly2 = Polygon(poly2)
+                            intersection_area = poly1.intersection(poly2).area
+                            a = poly1.area
+                            if intersection_area / a <= ILLEGAL_PARKING_MAX_RATIO_W:
+                                clock = False
+                                break
+                    elif ILLEGAL_POCICY == "center":
+                        point = Point((x1+x2)/2, y2)
+                        for poly2 in mask_regions:
+                            poly2 = Polygon(poly2)
+                            if not poly2.contains(point):
+                                clock = False
+                                break
                     
                     # add movement restriction
                     if MOVEMENT_RESTRICTION:
@@ -124,7 +147,7 @@ def process_video(video_path, show_masked):
                         parked_time = int(ts - history[id][0])
                     else:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
-                        history[id][0] = ts                  
+                        history[id][0] = ts                 
                     
                     history[id][1] = (x1,y1,x2,y2)
                     text = text + " " + str(parked_time) + "s"
