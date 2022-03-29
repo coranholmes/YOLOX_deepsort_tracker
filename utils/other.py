@@ -1,4 +1,5 @@
-import os, json, sys
+import os, json, sys, cv2
+from skimage.metrics import structural_similarity
 
 SUFFIX_LENGTH = 4  # the length of suffix (.mp4: length = 4)
 ILLEGAL_PARKED_THRESHOLD = (
@@ -15,6 +16,22 @@ ILLEGAL_PARKING_MAX_RATIO_W = 0.7  # similar to above but the RATIO is for wheel
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
 MOVEMENT_MAX_IOU = 0.8  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
 N_INIT = 3  # deepsort parameter, tracker confirmed after N_INIT times
+
+SIMILARITY_RESTRICTION = True
+SIMILARITY_THRESHOLD = 0.1
+
+
+def calc_similarity(img1, img2):
+    if img1.shape[0] * img1.shape[1] < img2.shape[0] * img2.shape[1]:
+        img1, img2 = img2, img1  # 保证old_crop比carnew_crop大
+    img1 = cv2.resize(img1, (img2.shape[1], img2.shape[0]))
+    # print(img1.shape, img2.shape)
+    sim = structural_similarity(img1, img2, multichannel=True)
+    return sim
+
+
+def get_area(x1, y1, x2, y2):
+    return (x2 - x1) * (y2 - y1)
 
 
 def get_exp_paras():
@@ -33,6 +50,10 @@ def get_exp_paras():
         + str(MOVEMENT_RESTRICTION)
         + "_"
         + str(MOVEMENT_MAX_IOU)
+        + "_"
+        + str(SIMILARITY_RESTRICTION)
+        + "_"
+        + str(SIMILARITY_THRESHOLD)
         + "_"
         + str(EVALUATION_IOU_THRESHOLD)
     )
