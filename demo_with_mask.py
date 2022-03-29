@@ -145,16 +145,17 @@ def process_video(video_path, show_masked):
                             movement_clock = 0
 
                     # add similarity restriction (只处理movement标为false的情况)
-                    if mask_clock == 1 and movement_clock == 1 and get_area(x1,y1,x2,y2) >= 500 and SIMILARITY_RESTRICTION:
+                    if mask_clock == 1 and movement_clock == 1 and get_area(x1,y1,x2,y2) >= SIMILARITY_MIN_AREA and SIMILARITY_RESTRICTION:
                         old_crop = history[id][2]
                         new_crop = im[y1:y2, x1:x2]
                         sim = calc_similarity(old_crop, new_crop)
-                        # if id in [1,28]:
-                        #     print(idx, id, sim)
-                        if sim < SIMILARITY_THRESHOLD:
-                            # reid has issue, need to skip moment restriction
-                            movement_clock = 0
+                        # if id in [145]:
+                        #     print(idx, id, sim, sim > history[id][3])
 
+                        if sim < SIMILARITY_THRESHOLD:
+                            movement_clock = 0
+                        history[id][3] = sim
+                        
                     # clock the parking time
                     if mask_clock == 0 or movement_clock == 0:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
@@ -162,8 +163,7 @@ def process_video(video_path, show_masked):
                         history[id][2] = im[y1:y2, x1:x2]     
                     elif movement_clock == 1:
                         parked_time = int(ts - history[id][0])
-                    # else: 
-                    #     parked_time = int(ts - history[id][0] - 1)  # parked_time 不更新                                  
+                                
                     history[id][1] = (x1,y1,x2,y2)
 
                     text = text + " " + str(parked_time) + "s"

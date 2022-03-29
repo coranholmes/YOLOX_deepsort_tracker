@@ -14,11 +14,12 @@ ILLEGAL_PARKING_MAX_RATIO = 0.3  # if the area of the vehicle / intersecion of v
 ILLEGAL_PARKING_MAX_RATIO_W = 0.7  # similar to above but the RATIO is for wheel
 
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
-MOVEMENT_MAX_IOU = 0.8  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
+MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
 N_INIT = 3  # deepsort parameter, tracker confirmed after N_INIT times
 
-SIMILARITY_RESTRICTION = True
-SIMILARITY_THRESHOLD = 0.1
+SIMILARITY_RESTRICTION = False
+SIMILARITY_THRESHOLD = 0.4
+SIMILARITY_MIN_AREA = 1000  # bbox must be larger than the area so it can be processed by similarity strategy
 
 
 def calc_similarity(img1, img2):
@@ -54,6 +55,8 @@ def get_exp_paras():
         + str(SIMILARITY_RESTRICTION)
         + "_"
         + str(SIMILARITY_THRESHOLD)
+        + "_"
+        + str(SIMILARITY_MIN_AREA)
         + "_"
         + str(EVALUATION_IOU_THRESHOLD)
     )
@@ -133,6 +136,7 @@ def make_video_subdir(ds_root):
 
 def get_mask_regions(mask_path, pic_name):
     print("Open mask file " + mask_path)
+
     mask_file = open(mask_path)
     mask_dict = json.load(mask_file)
 
