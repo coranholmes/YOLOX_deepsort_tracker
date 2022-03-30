@@ -100,7 +100,7 @@ def process_video(video_path, show_masked):
                 parked_time = 0
                 if id not in history.keys():
                     crop = im[y1:y2, x1:x2]
-                    history[id] = [ts, (x1,y1,x2,y2), crop]
+                    history[id] = [ts, (x1,y1,x2,y2), crop, 0]
                     parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
                     text = text + " " + str(parked_time) + "s"  
                 else:
