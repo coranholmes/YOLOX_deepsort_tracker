@@ -10,6 +10,8 @@ def generate_labels(label_path, step, events):
     if "ISLab" in label_path:
         id = int(label_path[-6:-4])
         frame_rate = ISLab_frame[id - 1]
+    elif "ussex" in label_path:
+        frame_rate = 25
     else:
         _, file_name = os.path.split(label_path)
         id = file_name[:-4]
@@ -56,23 +58,22 @@ def generate_labels(label_path, step, events):
 if __name__ == "__main__":
 
     # Label ISLab dataset
-    label_dir = os.path.join("videos", "ISLab", "label")
-    for file_name in os.listdir(label_dir):
-        label_path = os.path.join(label_dir, file_name)
-        id = int(label_path[-6:-4])
-        print("processing " + label_path)
-        generate_labels(label_path, ISLab_frame[id - 1], ISLab_label[id - 1])
+    # label_dir = os.path.join("videos", "ISLab", "label")
+    # for file_name in os.listdir(label_dir):
+    #     label_path = os.path.join(label_dir, file_name)
+    #     id = int(label_path[-6:-4])
+    #     print("processing " + label_path)
+    #     generate_labels(label_path, ISLab_frame[id - 1], ISLab_label[id - 1])
 
     # Label xd_full dataset
-    label_dir = os.path.join("videos", "xd_full", "label")
-    for file_name in xd_full_lst:
-        label_path = os.path.join(label_dir, file_name)
-        id = file_name[:-4]
-        generate_labels(label_path, xd_full_frame[id], xd_full_label[id])
+    # label_dir = os.path.join("videos", "xd_full", "label")
+    # for file_name in xd_full_lst:
+    #     label_path = os.path.join(label_dir, file_name)
+    #     id = file_name[:-4]
+    #     generate_labels(label_path, xd_full_frame[id], xd_full_label[id])
 
-    # Label single video example
-    # generate_labels(
-    #    label_path,
-    #     25,
-    #     [(19, 0, 1125), (8, 0, 3075), (327, 2075, 2575)],
-    # )  # cloudy
+    # Label Sussex dataset (Label single video example)
+    label_dir = os.path.join("videos", "Sussex", "label")
+    file_name = "SussexTrafficDay1.txt"
+    label_path = os.path.join(label_dir, file_name)
+    generate_labels(label_path, 25, sussex_label)
