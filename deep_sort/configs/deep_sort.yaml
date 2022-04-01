@@ -4,7 +4,7 @@ DEEPSORT:
   MIN_CONFIDENCE: 0.3  # bbox置信度大于阈值才会被输入deepsort进行追踪
   NMS_MAX_OVERLAP: 0.8  # default 0.9，数值越大意味着重合度很大才会被过滤掉
   MAX_IOU_DISTANCE: 0.5  # default 0.7
-  MAX_AGE: 5  # default 70，MAX_AGE次未track到则不再追踪
+  MAX_AGE: 70  # default 70，MAX_AGE次未track到则不再追踪
   N_INIT: 3  # N_INIT次追踪到后tracker的状态变为confirmed
   NN_BUDGET: 50  # default 100，使用深度网络提取detection和轨迹状态中的bbox包含的外观特征向量(轨迹中包含最后NN_BUDGET个外观，并取它们特征向量之间的最小余弦距离作为detection和轨迹之间的外观相似度)
   
