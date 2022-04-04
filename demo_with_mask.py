@@ -69,7 +69,7 @@ def process_video(video_path, show_masked):
     tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolov3", ckpt="weights/yolox_darknet53.47.3.pth.tar")
     idx = 0  # the idx of the frame
     image = None
-    history = dict()  # the variable which stores tracking history: id -> [timestamp first detected, (x1,y1,x2,y2) 最新位置, crop of the vehicle]
+    history = dict()  # the variable which stores tracking history: id -> [timestamp first detected, (x1,y1,x2,y2) 最新位置, 最后一次探测到的帧]
     DETECT_EVERY_N_FRAMES = round(video_fps)  # detect every second
 
     while True:
@@ -100,7 +100,7 @@ def process_video(video_path, show_masked):
                 parked_time = 0
                 if id not in history.keys():
                     crop = im[y1:y2, x1:x2]
-                    history[id] = [ts, (x1,y1,x2,y2), crop, 0]
+                    history[id] = [ts, (x1,y1,x2,y2), crop, ts]
                     parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
                     text = text + " " + str(parked_time) + "s"  
                 else:
@@ -143,28 +143,27 @@ def process_video(video_path, show_masked):
                         iou = get_iou(old_box, (x1,y1,x2,y2))
                         if iou <= MOVEMENT_MAX_IOU: 
                             movement_clock = 0
+                            # if id in [355]:
+                            #     print(idx, id, iou, "movement clock restart!")
 
                     # add similarity restriction (只处理movement标为false的情况)
                     if mask_clock == 1 and movement_clock == 1 and get_area(x1,y1,x2,y2) >= SIMILARITY_MIN_AREA and SIMILARITY_RESTRICTION:
                         old_crop = history[id][2]
                         new_crop = im[y1:y2, x1:x2]
                         sim = calc_similarity(old_crop, new_crop)
-                        # if id in [145]:
-                        #     print(idx, id, sim, sim > history[id][3])
-
-                        if sim < SIMILARITY_THRESHOLD:
+                        if sim < SIMILARITY_THRESHOLD and ts - history[id][3] >= 5:
                             movement_clock = 0
-                        history[id][3] = sim
                         
                     # clock the parking time
                     if mask_clock == 0 or movement_clock == 0:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
                         history[id][0] = ts   
-                        history[id][2] = im[y1:y2, x1:x2]     
+                        history[id][2] = im[y1:y2, x1:x2]
                     elif movement_clock == 1:
                         parked_time = int(ts - history[id][0])
                                 
                     history[id][1] = (x1,y1,x2,y2)
+                    history[id][3] = ts
 
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  

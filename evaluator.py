@@ -1,7 +1,7 @@
+from email.policy import default
 import os, argparse, json
 import numpy as np
 from utils.other import *
-from torch import positive
 
 
 def calculate_f1(tp, fp, fn):
@@ -123,7 +123,9 @@ def process_label(label_path, gt_path, by_frame=False):
         fp = p - tp
     else:  # evaluate based on events
         gt_ids = []
-        dec_ids = []
+        dec_ids = dict()
+        for e in dec_ids_set:
+            dec_ids[e] = False
         for frame in sorted(gts):  # 遍历gt中的每个frame
             cur_frame_gt_cnt = len(gts[frame])
             match_cnt = 0
@@ -137,12 +139,14 @@ def process_label(label_path, gt_path, by_frame=False):
                             tp += 1
                             match_cnt += 1
                             gt_ids.append(gt_id)
-                            dec_ids.append(dec_id)
+                            dec_ids[dec_id] = True
                             print(dec_id, "matches", gt_id)
-        if p2 < len(dec_ids):
-            print("============================", p2, len(dec_ids))
-            p2 = len(dec_ids)
-        fp = p2 - tp
+                            break
+        fp = 0
+        for k in dec_ids:
+            if dec_ids[k] == False:
+                fp += 1
+        p2 = tp + fp
         fn = len(gt_ids_set) - tp
 
     print("p:", p if by_frame else p2, "tp:", tp, "fp:", fp, "fn:", fn)
