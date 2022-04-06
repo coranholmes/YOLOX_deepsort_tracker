@@ -69,10 +69,11 @@ def process_video(video_path, show_masked):
     tracker = Tracker(filter_class=['car', 'bicycle', 'motorbike', 'bus', 'truck'], model="yolov3", ckpt="weights/yolox_darknet53.47.3.pth.tar")
     idx = 0  # the idx of the frame
     image = None
-    history = dict()  # the variable which stores tracking history: id -> [timestamp first detected, (x1,y1,x2,y2) 最新位置, 最后一次探测到的帧]
+    history = dict()  
     DETECT_EVERY_N_FRAMES = round(video_fps)  # detect every second
-
+   
     while True:
+        # e1 = cv2.getTickCount()
         _, im = vid.read()
         if im is None:  # read finishes if there are no more frames
             break
@@ -100,7 +101,14 @@ def process_video(video_path, show_masked):
                 parked_time = 0
                 if id not in history.keys():
                     crop = im[y1:y2, x1:x2]
-                    history[id] = [ts, (x1,y1,x2,y2), crop, ts]
+                    history[id] = {
+                        "first_record":ts,  # 第一次被探测到时的timestamp
+                        "region":(x1,y1,x2,y2),  # bbox的最新位置信息
+                        "crop":crop,  # bbox的最新图像信息
+                        "last_record":ts,  # 上一次被探测到时的timestamp
+                        "type": cate,  # bbox的类别
+                        "type_first_record": ts  # 记录到该类别的首次timestamp
+                    }
                     parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
                     text = text + " " + str(parked_time) + "s"  
                 else:
@@ -139,7 +147,7 @@ def process_video(video_path, show_masked):
                     
                     # add movement restriction
                     if mask_clock == 1 and MOVEMENT_RESTRICTION:
-                        old_box = history[id][1]
+                        old_box = history[id]["region"]
                         iou = get_iou(old_box, (x1,y1,x2,y2))
                         if iou <= MOVEMENT_MAX_IOU: 
                             movement_clock = 0
@@ -148,27 +156,30 @@ def process_video(video_path, show_masked):
 
                     # add similarity restriction (只处理movement标为false的情况)
                     if mask_clock == 1 and movement_clock == 1 and get_area(x1,y1,x2,y2) >= SIMILARITY_MIN_AREA and SIMILARITY_RESTRICTION:
-                        old_crop = history[id][2]
+                        old_crop = history[id]["crop"]
                         new_crop = im[y1:y2, x1:x2]
                         sim = calc_similarity(old_crop, new_crop)
-                        if sim < SIMILARITY_THRESHOLD and ts - history[id][3] >= 5:
+                        if sim < SIMILARITY_THRESHOLD and ts - history[id]["last_record"] >= 5:
                             movement_clock = 0
                         
                     # clock the parking time
                     if mask_clock == 0 or movement_clock == 0:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
-                        history[id][0] = ts   
-                        history[id][2] = im[y1:y2, x1:x2]
+                        history[id]["first_record"] = ts   
+                        history[id]["crop"] = im[y1:y2, x1:x2]
                     elif movement_clock == 1:
-                        parked_time = int(ts - history[id][0])
+                        parked_time = int(ts - history[id]["first_record"])
                                 
-                    history[id][1] = (x1,y1,x2,y2)
-                    history[id][3] = ts
+                    history[id]["region"] = (x1,y1,x2,y2)
+                    history[id]["last_record"] = ts
 
                     text = text + " " + str(parked_time) + "s"
                     if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
                         text += " Detected!"
-                    
+                # e2 = cv2.getTickCount()
+                # fps = cv2.getTickFrequency() / (e2 - e1)
+                # print("FPS:", fps)
+
                 text_labels.append(text)
                 # write the time and location info to json file
                 json_dict = {
