@@ -161,7 +161,12 @@ def process_video(video_path, show_masked):
                         sim = calc_similarity(old_crop, new_crop)
                         if sim < SIMILARITY_THRESHOLD and ts - history[id]["last_record"] >= 5:
                             movement_clock = 0
-                        
+                    
+                    # update type restriction info
+                    old_cate = history[id]["type"]
+                    if old_cate != cate:
+                        history[id]["type_first_record"] = ts
+                                                
                     # clock the parking time
                     if mask_clock == 0 or movement_clock == 0:
                         parked_time = 0  # 这里归零是因为在之前的策略中判定并非illegal所以重新计时
@@ -172,10 +177,14 @@ def process_video(video_path, show_masked):
                                 
                     history[id]["region"] = (x1,y1,x2,y2)
                     history[id]["last_record"] = ts
+                    history[id]["type"] = cate
 
                     text = text + " " + str(parked_time) + "s"
-                    if parked_time >= ILLEGAL_PARKED_THRESHOLD:  
-                        text += " Detected!"
+                    if parked_time >= ILLEGAL_PARKED_THRESHOLD:
+                        if TYPE_RESTRICTION and ts - history[id]["type_first_record"] < TYPE_MIN_FRAME:
+                            text += " Tentative"
+                        else:
+                            text += " Detected!"
                 # e2 = cv2.getTickCount()
                 # fps = cv2.getTickFrequency() / (e2 - e1)
                 # print("FPS:", fps)
@@ -193,6 +202,10 @@ def process_video(video_path, show_masked):
                     'parked_time': int(parked_time),
                     'detected': 'YES' if parked_time >= ILLEGAL_PARKED_THRESHOLD else 'NO'
                 }
+
+                if TYPE_RESTRICTION and parked_time >= ILLEGAL_PARKED_THRESHOLD and ts - history[id]["type_first_record"] < TYPE_MIN_FRAME:
+                        json_dict["detected"] = "TENTATIVE"
+
                 file.write(json.dumps(json_dict) + "\n")
 
             if show_masked:  # if True, draw the masked area

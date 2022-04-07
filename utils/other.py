@@ -14,12 +14,15 @@ ILLEGAL_PARKING_MAX_RATIO = 0.3  # if the area of the vehicle / intersecion of v
 ILLEGAL_PARKING_MAX_RATIO_W = 0.7  # similar to above but the RATIO is for wheel
 
 MOVEMENT_RESTRICTION = True  # if the vehicle moves, counting would restart
-MOVEMENT_MAX_IOU = 0.8  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
+MOVEMENT_MAX_IOU = 0.9  # the maximum iou between the location in the old and new frame of the same vehicle, ISLab=0.8, xd_full=0.9
 N_INIT = 3  # deepsort parameter, tracker confirmed after N_INIT times
 
 SIMILARITY_RESTRICTION = True
-SIMILARITY_THRESHOLD = 0.4
+SIMILARITY_THRESHOLD = 0.1
 SIMILARITY_MIN_AREA = 1000  # bbox must be larger than the area so it can be processed by similarity strategy
+
+TYPE_RESTRICTION = True
+TYPE_MIN_FRAME = 1  # the type of the bbox must remains at least 5 frames, otherwise it might be a bad dection
 
 
 def calc_similarity(img1, img2):
@@ -59,6 +62,10 @@ def get_exp_paras():
         + str(SIMILARITY_MIN_AREA)
         + "_"
         + str(EVALUATION_IOU_THRESHOLD)
+        + "_"
+        + str(TYPE_RESTRICTION)
+        + "_"
+        + str(TYPE_MIN_FRAME)
         + "__DS_"
     )
 
