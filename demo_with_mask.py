@@ -110,7 +110,6 @@ def process_video(video_path, show_masked):
                         "type_first_record": ts  # 记录到该类别的首次timestamp
                     }
                     parked_time = N_INIT - 1  # 第一次出现已经过去(N_INIT - 1)s
-                    text = text + " " + str(parked_time) + "s"  
                 else:
                     mask_clock = 1
                     movement_clock = 1
@@ -179,17 +178,11 @@ def process_video(video_path, show_masked):
                     history[id]["last_record"] = ts
                     history[id]["type"] = cate
 
-                    text = text + " " + str(parked_time) + "s"
-                    if parked_time >= ILLEGAL_PARKED_THRESHOLD:
-                        if TYPE_RESTRICTION and ts - history[id]["type_first_record"] < TYPE_MIN_FRAME:
-                            text += " Tentative"
-                        else:
-                            text += " Detected!"
                 # e2 = cv2.getTickCount()
                 # fps = cv2.getTickFrequency() / (e2 - e1)
                 # print("FPS:", fps)
 
-                text_labels.append(text)
+                
                 # write the time and location info to json file
                 json_dict = {
                     'frame': int(idx),
@@ -205,7 +198,14 @@ def process_video(video_path, show_masked):
 
                 if TYPE_RESTRICTION and parked_time >= ILLEGAL_PARKED_THRESHOLD and ts - history[id]["type_first_record"] < TYPE_MIN_FRAME:
                         json_dict["detected"] = "TENTATIVE"
-
+                
+                # prepare labels for visualization
+                text = text + " " + str(parked_time) + "s"
+                if json_dict["detected"] == "YES":
+                    text += " Detected!"
+                elif json_dict["detected"] == 'TENTATIVE':
+                    text += " Tentative"
+                text_labels.append(text)
                 file.write(json.dumps(json_dict) + "\n")
 
             if show_masked:  # if True, draw the masked area
