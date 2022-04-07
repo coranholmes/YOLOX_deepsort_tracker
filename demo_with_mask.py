@@ -55,6 +55,8 @@ def process_video(video_path, show_masked):
     mask_path = os.path.join(ds_root, 'mask', 'mask.json')
     
     file = open(label_output_path, 'w')
+    file_lines = []  # 暂存要写入label文件的内容
+    dec_ids_set = set()  # 记录detect到的id
     mask_regions = get_mask_regions(mask_path, vid_name[:-SUFFIX_LENGTH] + ".jpg")
 
     vid = cv2.VideoCapture(video_path)
@@ -198,6 +200,8 @@ def process_video(video_path, show_masked):
 
                 if TYPE_RESTRICTION and parked_time >= ILLEGAL_PARKED_THRESHOLD and ts - history[id]["type_first_record"] < TYPE_MIN_FRAME:
                         json_dict["detected"] = "TENTATIVE"
+                if json_dict["detected"] == "YES":
+                    dec_ids_set.add(json_dict["id"])
                 
                 # prepare labels for visualization
                 text = text + " " + str(parked_time) + "s"
@@ -206,7 +210,7 @@ def process_video(video_path, show_masked):
                 elif json_dict["detected"] == 'TENTATIVE':
                     text += " Tentative"
                 text_labels.append(text)
-                file.write(json.dumps(json_dict) + "\n")
+                file_lines.append(json_dict)
 
             if show_masked:  # if True, draw the masked area
                 alpha = 0.3
@@ -224,15 +228,21 @@ def process_video(video_path, show_masked):
             make_dir(capture_output_path)
             cv2.imwrite(os.path.join(capture_output_path, str(idx) + '.jpg'), image)
 
+        # write results to a video
         # if image is not None:
         #     out.write(image)
         # else:
         #     out.write(im)
         
         idx += 1
-
-    file.close()
     vid.release()
+
+    for json_dict in file_lines:
+        if json_dict["id"] in dec_ids_set and json_dict["detected"] == "TENTATIVE":
+            json_dict["detected"] = "YES"
+            json_dict["corrected"] = 1
+        file.write(json.dumps(json_dict) + "\n")
+    file.close()
 
 
 if __name__ == '__main__':
