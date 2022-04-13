@@ -1,3 +1,4 @@
+from distutils.log import debug
 from evaluator import get_iou
 from tracker import Tracker
 from detector import Detector
@@ -16,10 +17,10 @@ from shapely.geometry import Polygon, Point
 class_names = COCO_CLASSES
 
 def multi_worker(args):
-    vid_path, ds_name, show_masked = args.path, args.name, args.mask
+    vid_path, ds_name, show_masked, debugging = args.path, args.name, args.mask, args.debug
     if os.path.isfile(vid_path):  # process single video
         print("Processing single video path: %s" % vid_path)
-        process_video(vid_path, show_masked)
+        process_video(vid_path, show_masked, debugging)
     else:
         n_proc = 6
         ds_root = os.path.join(os.getcwd(), 'videos', ds_name)
@@ -30,19 +31,19 @@ def multi_worker(args):
         procs = []
         for chunk in chunks:
             if len(chunk) > 0:
-                proc = Process(target=multi_process_video, args=(chunk, ), kwargs={"show_masked": show_masked})
+                proc = Process(target=multi_process_video, args=(chunk, ), kwargs={"show_masked": show_masked, "debugging": debugging})
                 procs.append(proc)
                 proc.start()
 
         for proc in procs:
             proc.join()
 
-def multi_process_video(chunk, show_masked):
+def multi_process_video(chunk, show_masked, debugging):
     for vid_path in chunk:
-        process_video(vid_path, show_masked)
+        process_video(vid_path, show_masked, debugging)
 
 
-def process_video(video_path, show_masked):
+def process_video(video_path, show_masked, debugging):
 
     input_dir, vid_name= os.path.split(video_path)
     ds_root = os.path.abspath(os.path.join(input_dir, ".."))
@@ -222,7 +223,7 @@ def process_video(video_path, show_masked):
                     cv2.fillPoly(overlay, exterior, color=(0, 255, 255))
                 cv2.addWeighted(overlay, alpha, im, 1 - alpha, 0, im)
             
-            image = vis_track(im, outputs, text_labels)
+            image = vis_track(im, outputs, text_labels, debugging)
 
             # save results to screen shots
             make_dir(capture_output_path)
@@ -251,6 +252,7 @@ if __name__ == '__main__':
     parser.add_argument('-n', "--name", type=str, default="ISLab", help="ISLab|xd_full, choose the dataset to run the experiment")
     parser.add_argument('-p', "--path", type=str, default="videos/ISLab/input/ISLab-13.mp44", help="choose a video to be processed")
     parser.add_argument('-m', '--mask', action="store_true", help="show masked area or not")   # default False， --mask changes the parameter to True
+    parser.add_argument('-d', '--debug', action="store_true", help="show debugging results of deepsort tracking bbox")
     args = parser.parse_args()
 
     multi_worker(args)

@@ -38,9 +38,15 @@ def vis(img, boxes, scores, cls_ids, conf=0.5, class_names=None):
     return img
 
 
-def vis_track(img, boxes, text_labels):
+def vis_track(img, boxes, text_labels, debugging):
 
     for i in range(len(boxes)):
+        text = text_labels[i]
+        
+        # only show detected results
+        if debugging and not text.endswith("!"):
+            continue
+
         box = boxes[i]
 
         x0 = int(box[0])
@@ -53,8 +59,6 @@ def vis_track(img, boxes, text_labels):
         color = (color_ * 255).astype(np.uint8).tolist()
         txt_color = (255, 255, 255)
         txt_bk_color = (color_ * 255 * 0.7).astype(np.uint8).tolist()
-
-        text = text_labels[i]
 
         if text.endswith("!"):  # show detected vehicles
             color = (255, 255, 255)
