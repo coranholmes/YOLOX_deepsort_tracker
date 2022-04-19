@@ -44,7 +44,7 @@ def vis_track(img, boxes, text_labels, debugging):
         text = text_labels[i]
         
         # only show detected results
-        if debugging and not text.endswith("!"):
+        if not debugging and not text.endswith("!"):
             continue
 
         box = boxes[i]
