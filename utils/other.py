@@ -22,7 +22,7 @@ SIMILARITY_THRESHOLD = 0.1
 SIMILARITY_MIN_AREA = 1000  # bbox must be larger than the area so it can be processed by similarity strategy
 
 TYPE_RESTRICTION = True
-TYPE_MIN_FRAME = 1  # the type of the bbox must remains at least 5 frames, otherwise it might be a bad dection
+TYPE_MIN_FRAME = 1  # the type of the bbox must remains at least TYPE_MIN_FRAME frames, otherwise it might be a bad dection, ISLab = 5, xd_full = 1
 
 
 def calc_similarity(img1, img2):

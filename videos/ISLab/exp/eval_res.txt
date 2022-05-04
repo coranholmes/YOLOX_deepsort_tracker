@@ -1,0 +1,267 @@
+ISLab_frame_car_0.28_True_0.9_0.6
+tp: 1889	fp: 204	fn: 715
+precision: 0.9025322503583373	recall: 0.7254224270353302	f1: 0.8043431977858208
+
+ISLab_event_car_0.28_True_0.9_0.6
+tp: 24	fp: 3	fn: 0
+precision: 0.8888888888888888	recall: 1.0	f1: 0.9411764705882353
+
+ISLab_event_car_0.3_True_0.9_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.9_0.6
+tp: 1889	fp: 113	fn: 715
+precision: 0.9435564435564435	recall: 0.7254224270353302	f1: 0.8202344767694311
+
+ISLab_frame_car_0.3_True_0.9_0.6
+tp: 1862	fp: 113	fn: 742
+precision: 0.9427848101265823	recall: 0.7150537634408602	f1: 0.8132780082987552
+
+ISLab_frame_car_0.3_False_0.9_0.6
+tp: 2533	fp: 196	fn: 71
+precision: 0.9281788200806156	recall: 0.9727342549923195	f1: 0.9499343708981811
+
+ISLab_event_car_0.3_False_0.9_0.6
+tp: 24	fp: 4	fn: 0
+precision: 0.8571428571428571	recall: 1.0	f1: 0.923076923076923
+
+ISLab_event_car_0.3_True_0.9_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.9_0.6
+tp: 1889	fp: 113	fn: 715
+precision: 0.9435564435564435	recall: 0.7254224270353302	f1: 0.8202344767694311
+
+ISLab_frame_car_0.3_False_0.9_0.6
+tp: 2533	fp: 196	fn: 71
+precision: 0.9281788200806156	recall: 0.9727342549923195	f1: 0.9499343708981811
+
+ISLab_event_car_0.3_False_0.9_0.6
+tp: 24	fp: 4	fn: 0
+precision: 0.8571428571428571	recall: 1.0	f1: 0.923076923076923
+
+ISLab_event_center_NA_False_0.9_0.6
+tp: 7	fp: 263	fn: 17
+precision: 0.025925925925925925	recall: 0.2916666666666667	f1: 0.047619047619047616
+
+ISLab_frame_center_NA_False_0.9_0.6
+tp: 756	fp: 11735	fn: 1848
+precision: 0.0605235769754223	recall: 0.2903225806451613	f1: 0.10016561775422325
+
+ISLab_frame_center_NA_False_0.9_0.6
+tp: 1753	fp: 189	fn: 851
+precision: 0.9026776519052523	recall: 0.6731950844854071	f1: 0.7712274527056753
+
+ISLab_event_center_NA_False_0.9_0.6
+tp: 18	fp: 3	fn: 6
+precision: 0.8571428571428571	recall: 0.75	f1: 0.7999999999999999
+ISLab_frame_center_NA_False_0.9_0.6
+tp: 2303	fp: 451	fn: 301
+precision: 0.836238198983297	recall: 0.8844086021505376	f1: 0.8596491228070176
+
+ISLab_event_center_NA_False_0.9_0.6
+tp: 23	fp: 5	fn: 1
+precision: 0.8214285714285714	recall: 0.9583333333333334	f1: 0.8846153846153847
+
+ISLab_event_car_0.3_True_0.9_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.9_0.6
+tp: 1889	fp: 113	fn: 715
+precision: 0.9435564435564435	recall: 0.7254224270353302	f1: 0.8202344767694311
+
+ISLab_frame_car_0.3_True_0.8_0.6
+tp: 2443	fp: 145	fn: 161
+precision: 0.9439721792890263	recall: 0.9381720430107527	f1: 0.9410631741140216
+
+ISLab_event_car_0.3_True_0.8_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=10
+tp: 2443	fp: 145	fn: 161
+precision: 0.9439721792890263	recall: 0.9381720430107527	f1: 0.9410631741140216
+
+ISLab_event_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=10
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=50
+tp: 2444	fp: 145	fn: 160
+precision: 0.943993820007725	recall: 0.9385560675883257	f1: 0.9412670903138841
+
+ISLab_event_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=50
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=70
+tp: 2444	fp: 147	fn: 160
+precision: 0.9432651485912775	recall: 0.9385560675883257	f1: 0.9409047160731474
+
+ISLab_event_car_0.3_True_0.8_False_0.5_0.6 MAX_AGE=70
+tp: 24	fp: 2	fn: 0
+precision: 0.9230769230769231	recall: 1.0	f1: 0.9600000000000001
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_0.6
+tp: 1377	fp: 131	fn: 1227
+precision: 0.9131299734748011	recall: 0.5288018433179723	f1: 0.6697470817120623
+
+ISLab_event_car_0.3_True_0.8_True_0.1_0.6
+tp: 18	fp: 1	fn: 6
+precision: 0.9473684210526315	recall: 0.75	f1: 0.8372093023255814
+
+ISLab_event_car_0.3_True_0.8_True_0.1_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_0.6
+tp: 2393	fp: 140	fn: 211
+precision: 0.944729569680221	recall: 0.9189708141321045	f1: 0.9316721822075141
+
+ISLab_event_car_0.3_True_0.8_True_0.1_800_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_800_0.6
+tp: 2394	fp: 141	fn: 210
+precision: 0.9443786982248521	recall: 0.9193548387096774	f1: 0.9316987740805605
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6 Similarity cashe 1 frame
+tp: 24	fp: 2	fn: 0
+precision: 0.9230769230769231	recall: 1.0	f1: 0.9600000000000001
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6 Similarity cashe 1 frame
+tp: 2431	fp: 146	fn: 173
+precision: 0.9433449747768723	recall: 0.9335637480798771	f1: 0.9384288747346071
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6
+tp: 24	fp: 2	fn: 0
+precision: 0.9230769230769231	recall: 1.0	f1: 0.9600000000000001
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6
+tp: 2444	fp: 147	fn: 160
+precision: 0.9432651485912775	recall: 0.9385560675883257	f1: 0.9409047160731474
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6
+tp: 24	fp: 2	fn: 0
+precision: 0.9230769230769231	recall: 1.0	f1: 0.9600000000000001
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6
+tp: 2444	fp: 147	fn: 160
+precision: 0.9432651485912775	recall: 0.9385560675883257	f1: 0.9409047160731474
+
+ISLab_frame_car_0.3_True_0.9_True_0.1_1000_0.6
+tp: 1889	fp: 113	fn: 715
+precision: 0.9435564435564435	recall: 0.7254224270353302	f1: 0.8202344767694311
+
+ISLab_event_car_0.3_True_0.9_True_0.1_1000_0.6
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_event_car_0.3_True_0.9_True_0.4_1000_0.6__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.9_True_0.4_1000_0.6__DS_0.5_70
+tp: 1889	fp: 113	fn: 715
+precision: 0.9435564435564435	recall: 0.7254224270353302	f1: 0.8202344767694311
+
+ISLab_frame_car_0.3_True_0.8_True_0.4_1000_0.6__DS_0.5_70
+tp: 2244	fp: 116	fn: 360
+precision: 0.9508474576271186	recall: 0.8617511520737328	f1: 0.904109589041096
+
+ISLab_event_car_0.3_True_0.8_True_0.4_1000_0.6__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_event_car_0.3_False_0.8_False_0.4_1000_0.6__DS_0.5_70
+tp: 24	fp: 16	fn: 0
+precision: 0.6	recall: 1.0	f1: 0.7499999999999999
+
+ISLab_frame_car_0.3_False_0.8_False_0.4_1000_0.6__DS_0.5_70
+tp: 2535	fp: 271	fn: 69
+precision: 0.9034212401995724	recall: 0.9735023041474654	f1: 0.9371534195933456
+
+ISLab_event_car_0.3_False_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 13	fn: 0
+precision: 0.6486486486486487	recall: 1.0	f1: 0.7868852459016393
+
+ISLab_frame_car_0.3_False_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 2507	fp: 222	fn: 97
+precision: 0.9186515207035544	recall: 0.9627496159754224	f1: 0.9401837614850928
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 2425	fp: 144	fn: 179
+precision: 0.9439470611132736	recall: 0.9312596006144394	f1: 0.9375604098202204
+
+ISLab_frame_car_0.3_True_0.8_False_0.1_1000_0.6__DS_0.5_70
+tp: 2444	fp: 147	fn: 160
+precision: 0.9432651485912775	recall: 0.9385560675883257	f1: 0.9409047160731474
+
+ISLab_event_car_0.3_True_0.8_False_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 2	fn: 0
+precision: 0.9230769230769231	recall: 1.0	f1: 0.9600000000000001
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 2444	fp: 146	fn: 160
+precision: 0.9436293436293436	recall: 0.9385560675883257	f1: 0.941085868309588
+
+ISLab_frame_car_0.3_False_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 2533	fp: 252	fn: 71
+precision: 0.9095152603231598	recall: 0.9727342549923195	f1: 0.9400630914826499
+
+ISLab_event_car_0.3_False_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 14	fn: 0
+precision: 0.631578947368421	recall: 1.0	f1: 0.7741935483870968
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6__DS_0.5_70
+tp: 2444	fp: 146	fn: 160
+precision: 0.9436293436293436	recall: 0.9385560675883257	f1: 0.941085868309588
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6_True_5__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6_True_5__DS_0.5_70
+tp: 2172	fp: 131	fn: 432
+precision: 0.9431176726009552	recall: 0.8341013824884793	f1: 0.8852659466068882
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6_True_5__DS_0.5_70
+tp: 2444	fp: 146	fn: 160
+precision: 0.9436293436293436	recall: 0.9385560675883257	f1: 0.941085868309588
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6_True_5__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
+ISLab_event_car_0.3_False_0.8_False_0.1_1000_0.6_False_1__DS_0.5_70 yoloxs-s
+tp: 21	fp: 20	fn: 3
+precision: 0.5121951219512195	recall: 0.875	f1: 0.6461538461538462
+
+ISLab_frame_car_0.3_False_0.8_False_0.1_1000_0.6_False_1__DS_0.5_70 yoloxs-s
+tp: 2328	fp: 390	fn: 276
+precision: 0.8565121412803532	recall: 0.8940092165898618	f1: 0.874859075535513
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6_True_1__DS_0.5_70
+tp: 21	fp: 6	fn: 3
+precision: 0.7777777777777778	recall: 0.875	f1: 0.823529411764706
+
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6_True_1__DS_0.5_70
+tp: 2282	fp: 244	fn: 322
+precision: 0.9034045922406968	recall: 0.8763440860215054	f1: 0.8896686159844055
+

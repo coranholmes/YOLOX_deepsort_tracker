@@ -1,0 +1,40 @@
+Sussex_event_car_0.3_False_0.9_False_0.4_1000_0.6 同车label两次
+tp: 7	fp: 0	fn: 0
+precision: 1.0	recall: 1.0	f1: 1.0
+
+Sussex_frame_car_0.3_False_0.9_False_0.4_1000_0.6 同车label两次
+tp: 1361	fp: 10	fn: 168
+precision: 0.9927060539752006	recall: 0.8901242642249837	f1: 0.9386206896551725
+
+Sussex_frame_car_0.3_False_0.9_False_0.4_1000_0.6 同车label一次
+tp: 1361	fp: 10	fn: 175
+precision: 0.9927060539752006	recall: 0.8860677083333334	f1: 0.9363605091159272
+
+Sussex_event_car_0.3_False_0.9_False_0.4_1000_0.6 同车label一次
+tp: 6	fp: 1	fn: 0
+precision: 0.8571428571428571	recall: 1.0	f1: 0.923076923076923
+
+Sussex_event_car_0.3_True_0.9_True_0.1_1000_0.6__DS_0.5_70
+tp: 6	fp: 3	fn: 0
+precision: 0.6666666666666666	recall: 1.0	f1: 0.8
+
+Sussex_frame_car_0.3_True_0.9_True_0.1_1000_0.6__DS_0.5_70
+tp: 830	fp: 5	fn: 706
+precision: 0.9940119760479041	recall: 0.5403645833333334	f1: 0.7001265288907633
+
+Sussex_event_car_0.3_True_0.9_True_0.1_1000_0.6__DS_0.5_5
+tp: 6	fp: 1	fn: 0
+precision: 0.8571428571428571	recall: 1.0	f1: 0.923076923076923
+
+Sussex_frame_car_0.3_True_0.9_True_0.1_1000_0.6__DS_0.5_5
+tp: 829	fp: 1	fn: 707
+precision: 0.9987951807228915	recall: 0.5397135416666666	f1: 0.7007607776838546
+
+Sussex_event_car_0.3_False_0.9_False_0.1_1000_0.6_False_1__DS_0.5_5
+tp: 6	fp: 1	fn: 0
+precision: 0.8571428571428571	recall: 1.0	f1: 0.923076923076923
+
+Sussex_frame_car_0.3_False_0.9_False_0.1_1000_0.6_False_1__DS_0.5_5
+tp: 1361	fp: 10	fn: 175
+precision: 0.9927060539752006	recall: 0.8860677083333334	f1: 0.9363605091159272
+

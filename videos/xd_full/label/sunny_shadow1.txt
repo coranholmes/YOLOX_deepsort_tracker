@@ -1,0 +1,17 @@
+{"frame": 2040, "id": 445, "type": "car", "top": 32, "left": 834, "bottom": 52, "right": 857, "parked_time": 2, "detected": "NO"}
+{"frame": 2070, "id": 445, "type": "car", "top": 32, "left": 839, "bottom": 50, "right": 859, "parked_time": 0, "detected": "NO"}
+{"frame": 3120, "id": 746, "type": "car", "top": 83, "left": 533, "bottom": 115, "right": 575, "parked_time": 2, "detected": "NO"}
+{"frame": 3150, "id": 746, "type": "car", "top": 83, "left": 537, "bottom": 114, "right": 578, "parked_time": 0, "detected": "NO"}
+{"frame": 3150, "id": 753, "type": "car", "top": 106, "left": 466, "bottom": 146, "right": 518, "parked_time": 2, "detected": "NO"}
+{"frame": 3180, "id": 753, "type": "car", "top": 106, "left": 468, "bottom": 145, "right": 519, "parked_time": 0, "detected": "NO"}
+{"frame": 3450, "id": 753, "type": "car", "top": 86, "left": 508, "bottom": 123, "right": 556, "parked_time": 0, "detected": "NO"}
+{"frame": 3480, "id": 753, "type": "car", "top": 84, "left": 512, "bottom": 121, "right": 560, "parked_time": 0, "detected": "NO"}
+{"frame": 3660, "id": 746, "type": "car", "top": 74, "left": 692, "bottom": 103, "right": 731, "parked_time": 0, "detected": "NO"}
+{"frame": 3690, "id": 746, "type": "car", "top": 73, "left": 701, "bottom": 102, "right": 739, "parked_time": 0, "detected": "NO"}
+{"frame": 3690, "id": 753, "type": "car", "top": 74, "left": 537, "bottom": 111, "right": 586, "parked_time": 0, "detected": "NO"}
+{"frame": 3720, "id": 753, "type": "car", "top": 72, "left": 541, "bottom": 109, "right": 590, "parked_time": 0, "detected": "NO"}
+{"frame": 3840, "id": 753, "type": "car", "top": 62, "left": 561, "bottom": 101, "right": 615, "parked_time": 0, "detected": "NO"}
+{"frame": 3870, "id": 753, "type": "car", "top": 60, "left": 565, "bottom": 100, "right": 619, "parked_time": 0, "detected": "NO"}
+{"frame": 3900, "id": 445, "type": "car", "top": 32, "left": 835, "bottom": 54, "right": 859, "parked_time": 0, "detected": "NO"}
+{"frame": 3930, "id": 445, "type": "car", "top": 33, "left": 833, "bottom": 55, "right": 859, "parked_time": 0, "detected": "NO"}
+{"frame": 3990, "id": 445, "type": "car", "top": 58, "left": 834, "bottom": 86, "right": 867, "parked_time": 0, "detected": "NO"}
