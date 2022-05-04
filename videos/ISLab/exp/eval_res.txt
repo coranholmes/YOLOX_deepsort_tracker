@@ -265,3 +265,11 @@ ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6_True_1__DS_0.5_70
 tp: 2282	fp: 244	fn: 322
 precision: 0.9034045922406968	recall: 0.8763440860215054	f1: 0.8896686159844055
 
+ISLab_frame_car_0.3_True_0.8_True_0.1_1000_0.6_True_1__DS_0.5_70
+tp: 2444	fp: 146	fn: 160
+precision: 0.9436293436293436	recall: 0.9385560675883257	f1: 0.941085868309588
+
+ISLab_event_car_0.3_True_0.8_True_0.1_1000_0.6_True_1__DS_0.5_70
+tp: 24	fp: 1	fn: 0
+precision: 0.96	recall: 1.0	f1: 0.9795918367346939
+
